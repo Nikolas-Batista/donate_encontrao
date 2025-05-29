@@ -3,7 +3,8 @@ from flask_cors import CORS
 from models import db, Item, Doacao
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+import os
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 CORS(app)
 db.init_app(app)
 
@@ -49,6 +50,7 @@ def listar_doacoes():
         {
             "item": d.item.nome,
             "quantidade": d.quantidade,
+            "doador": d.doador,
             "data": d.data.strftime("%d/%m/%Y %H:%M")
         }
         for d in doacoes
