@@ -36,9 +36,14 @@ def doar():
         return jsonify({"erro": "Item não encontrado"}), 404
 
     quantidade = int(data["quantidade"])
-    item.quantidade_estoque += quantidade
+    if quantidade > item.quantidade_estoque:
+        return jsonify({"erro": "Quantidade excede o estoque disponível"}), 400
 
-    doacao = Doacao(item_id=item.id, quantidade=quantidade)
+    item.quantidade_estoque -= quantidade
+    
+
+    doador = data.get("doador", "Anônimo")
+    doacao = Doacao(item_id=item.id, quantidade=quantidade, doador=doador)
     db.session.add(doacao)
     db.session.commit()
     return jsonify({"mensagem": "Doação registrada com sucesso"})
